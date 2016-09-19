@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+	has_many :microposts, dependent: :destroy
 
 	attr_accessor :remember_token, :activation_token, :reset_token
 
@@ -63,6 +64,12 @@ class User < ActiveRecord::Base
 		self.reset_token  = User.new_token
 		update_attribute(:reset_digest,  User.digest(reset_token))
         update_attribute(:reset_sent_at, Time.zone.now)
+	end
+
+	def feed
+		# microposts 可代替 Microposts.where("user_id" = ?, id)
+		Micropost.where("user_id = ?", id)
+
 	end
 
 end
